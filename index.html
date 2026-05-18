@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Net-Zero Navigators | Grand Finale Playbook</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'dark-bg': '#0B1120',
+                    'dark-surface': '#111B2E',
+                    'dark-card': '#162035',
+                    'dark-border': '#1E2D4A',
+                    'dark-border-light': '#2A3F5F',
+                    'nz-green': '#4ADE80',
+                    'nz-green-dim': '#22C55E',
+                    'nz-teal': '#2DD4BF',
+                    'nz-orange': '#FB923C',
+                    'nz-purple': '#C084FC',
+                    'nz-blue': '#60A5FA',
+                    'nz-red': '#F87171',
+                    'nz-yellow': '#FACC15',
+                },
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'],
+                }
+            }
+        }
+    }
+</script>
+<style>
+    body {
+        background-color: #0B1120;
+        background-image: url('background.png');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: #E2E8F0;
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #2A3F5F; border-radius: 3px; }
+    .chart-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        height: 45vh;
+        min-height: 350px;
+        max-height: 500px;
+        overflow: hidden;
+    }
+    .nav-active {
+        background: linear-gradient(90deg, rgba(74, 222, 128, 0.15), transparent);
+        border-left-width: 4px;
+        border-color: #4ADE80;
+        color: #4ADE80;
+        font-weight: 600;
+    }
+    .glass-card {
+        background: rgba(22, 32, 53, 0.85);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(30, 45, 74, 0.8);
+    }
+    .kpi-card {
+        background: rgba(22, 32, 53, 0.9);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(30, 45, 74, 0.8);
+        transition: all 0.3s ease;
+    }
+    .kpi-card:hover {
+        border-color: rgba(74, 222, 128, 0.4);
+        box-shadow: 0 0 20px rgba(74, 222, 128, 0.08);
+    }
+    .glow-green { text-shadow: 0 0 10px rgba(74, 222, 128, 0.5); }
+    .glow-orange { text-shadow: 0 0 10px rgba(251, 146, 60, 0.5); }
+    .glow-purple { text-shadow: 0 0 10px rgba(192, 132, 252, 0.5); }
+    .glow-red { text-shadow: 0 0 10px rgba(248, 113, 113, 0.5); }
+    .glow-blue { text-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
+    .header-bar {
+        background: rgba(11, 17, 32, 0.92);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(30, 45, 74, 0.8);
+    }
+    .sidebar-bg {
+        background: rgba(11, 17, 32, 0.95);
+        backdrop-filter: blur(16px);
+    }
+    .pulse-dot {
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+    .script-card {
+        background: linear-gradient(135deg, rgba(22, 32, 53, 0.95), rgba(30, 45, 74, 0.8));
+        border: 1px solid rgba(74, 222, 128, 0.2);
+    }
+</style>
+</head>
+<body class="flex flex-col min-h-screen overflow-x-hidden antialiased">
+
+    <!-- HEADER BAR -->
+    <header class="header-bar sticky top-0 z-50 px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <img src="logo.png" alt="NetZero" class="h-14">
+            <div class="h-8 w-px bg-dark-border-light"></div>
+            <div>
+                <h1 class="text-lg font-bold text-white tracking-wide">Net-Zero Navigators Corridor Control</h1>
+
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="pulse-dot inline-block w-2 h-2 rounded-full bg-nz-green"></span>
+            <span class="text-xs text-nz-green font-medium">LIVE</span>
+            <div class="ml-4 px-4 py-1.5 rounded-lg border border-dark-border-light text-sm text-gray-300 hover:border-nz-green hover:text-nz-green transition cursor-pointer">Pot-Room</div>
+        </div>
+    </header>
+
+    <div class="flex flex-col md:flex-row flex-grow">
+        <!-- SIDEBAR -->
+        <nav class="w-full md:w-64 sidebar-bg border-r border-dark-border flex flex-col flex-shrink-0 z-10 md:h-[calc(100vh-60px)] md:sticky md:top-[60px]">
+            <div class="flex-grow overflow-y-auto py-4">
+                <ul class="space-y-1 px-3" id="nav-list">
+                    <li><button onclick="loadPhase(1)" id="nav-1" class="w-full text-left px-4 py-3 rounded-lg text-sm transition-colors nav-active">1. The Hook</button></li>
+                    <li><button onclick="loadPhase(2)" id="nav-2" class="w-full text-left px-4 py-3 rounded-lg text-sm text-gray-400 hover:bg-white/5 transition-colors">2. The Blind Spot</button></li>
+                    <li><button onclick="loadPhase(3)" id="nav-3" class="w-full text-left px-4 py-3 rounded-lg text-sm text-gray-400 hover:bg-white/5 transition-colors">3. The Edge Patch</button></li>
+                    <li><button onclick="loadPhase(4)" id="nav-4" class="w-full text-left px-4 py-3 rounded-lg text-sm text-gray-400 hover:bg-white/5 transition-colors">4. The Hero Pivot</button></li>
+                    <li><button onclick="loadPhase(5)" id="nav-5" class="w-full text-left px-4 py-3 rounded-lg text-sm text-gray-400 hover:bg-white/5 transition-colors">5. The Grand ROI</button></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-grow p-4 md:p-6 lg:p-8 overflow-y-auto">
+            <div class="max-w-6xl mx-auto">
+
+                <div id="phase-label" class="hidden"></div>
+                <div id="phase-title" class="hidden"></div>
+                <div id="phase-intro" class="hidden"></div>
+
+                <!-- KPI CARDS ROW -->
+                <section class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6" id="kpi-container">
+                    <div class="kpi-card p-4 rounded-xl">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Potline Current</span>
+                            <span class="text-lg">&#x26A1;</span>
+                        </div>
+                        <div class="text-2xl font-extrabold text-nz-purple glow-purple" id="kpi-current">419.97 kA</div>
+                        <div class="text-[11px] font-semibold text-nz-green mt-1" id="kpi-current-status">Optimal Demand</div>
+                    </div>
+                    <div class="kpi-card p-4 rounded-xl">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Renewable Mix</span>
+                            <span class="text-lg">&#x1F33F;</span>
+                        </div>
+                        <div class="text-2xl font-extrabold text-nz-green glow-green" id="kpi-renewable">84.96 %</div>
+                        <div class="text-[11px] font-semibold text-nz-green mt-1" id="kpi-renewable-status">Grid Stable</div>
+                    </div>
+                    <div class="kpi-card p-4 rounded-xl" id="kpi-card-temp">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Bath Temp</span>
+                            <span class="text-lg">&#x1F525;</span>
+                        </div>
+                        <div class="text-2xl font-extrabold text-nz-orange glow-orange" id="kpi-temp">960.0 &deg;C</div>
+                        <div class="text-[11px] font-semibold text-gray-400 mt-1" id="kpi-temp-status">Limit: 945&deg;C</div>
+                    </div>
+                    <div class="kpi-card p-4 rounded-xl" id="kpi-card-finance">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Carbon Credit</span>
+                            <span class="text-lg">&#x1F4B0;</span>
+                        </div>
+                        <div class="text-2xl font-extrabold text-nz-yellow" id="kpi-finance">$0</div>
+                        <div class="text-[11px] font-semibold text-gray-400 mt-1" id="kpi-finance-status">Penalties Avoided</div>
+                    </div>
+                </section>
+
+                <!-- MAIN CHART -->
+                <section class="glass-card rounded-xl p-4 md:p-6 mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 gap-3">
+                        <div>
+                            <h3 class="text-base font-bold text-white">System Telemetry & Visibility</h3>
+                            <p class="text-xs text-gray-400 mt-1" id="chart-desc">Real-time tracking of EV network load vs. Smelter power draw.</p>
+                        </div>
+                        <div id="action-container" class="hidden">
+                            <button id="primary-action-btn" class="bg-nz-green hover:bg-green-500 text-dark-bg font-bold py-2 px-5 rounded-lg shadow-lg shadow-nz-green/20 transition-all transform hover:scale-105 flex items-center gap-2 text-sm">Action</button>
+                        </div>
+                    </div>
+                    <div class="w-full bg-dark-bg/50 rounded-lg p-2 md:p-4 border border-dark-border">
+                        <div class="chart-wrapper">
+                            <canvas id="mainChart"></canvas>
+                        </div>
+                    </div>
+                    <div id="secondary-chart-container" class="w-full mt-5 hidden pt-5 border-t border-dark-border">
+                        <h4 class="text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider">Thermal Inertia Safety Margin</h4>
+                        <div class="chart-wrapper" style="height: 120px; min-height: 120px;">
+                            <canvas id="marginChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <div id="script-quote" class="hidden"></div>
+
+            </div>
+        </main>
+    </div>
+
+<script>
+    const state = { phase: 1, gapFixed: false, pivotAuthorized: false };
+
+    const content = {
+        1: {
+            label: "Phase 1 / 5",
+            title: "The Hook: Molten Iron and Municipal Grids",
+            intro: "Welcome to the interactive playbook for Cerebulb's Grand Finale pitch. This application translates our narrative into an interactive data experience. In this first phase, we establish the baseline: a massive, power-hungry aluminum smelter running optimally alongside a city grid. The data below reflects normal operations, setting the stage for the crisis to come.",
+            script: "\"Judges, look at this dashboard. At the heart of our industrial corridor is an aluminum smelter. Inside its pots, molten metal rages at 960\u00B0C. It is violent, massive, and consumes more power than a small metropolitan city. If that power is cut for more than four hours, the metal freezes... Welcome to Smart Sector Coupling.\"",
+            metrics: { current: "419.97 kA", currentStat: "Optimal Demand", curStatColor: "text-nz-green", ren: "84.96 %", renStat: "Grid Stable", renStatColor: "text-nz-green", temp: "960.0 &deg;C", tempStat: "Limit: 945&deg;C", fin: "$0", finStat: "Nominal Operations" },
+            chartDesc: "Continuous baseline telemetry indicating a balanced grid and healthy industrial load.",
+            actionBtn: null
+        },
+        2: {
+            label: "Phase 2 / 5",
+            title: "The Blind Spot: On-Site Crisis",
+            intro: "Here, we introduce the core problem. The renewable energy stack collapses, and critically, communication with the CSM-PRO 9000 EV chargers fails. The visualizations now depict a dangerous 'blind spot' in the data stream, emphasizing the urgent need for intervention.",
+            script: "\"During a routine network transition, the data pipe from AVEVA City's newly expanded smart charging network\u2014driven by the CSM-PRO 9000 controllers\u2014completely severed. As you can see on our live screen, the City Council was left operating in total darkness... blind to a mounting grid crisis.\"",
+            metrics: { current: "419.97 kA", currentStat: "Blind High Draw", curStatColor: "text-nz-orange", ren: "14.25 %", renStat: "CRITICAL DIP", renStatColor: "text-nz-red", temp: "960.5 &deg;C", tempStat: "Limit: 945&deg;C", fin: "-$12,400", finStat: "Imminent Penalty" },
+            chartDesc: "CRITICAL: Live connection lost. Historical visibility gap of 48 hours detected.",
+            actionBtn: null
+        },
+        3: {
+            label: "Phase 3 / 5",
+            title: "The Edge Patch: AAA & Crosser",
+            intro: "This section demonstrates the technical solution to the data gap. By interacting below, you visually repair the data pipeline, proving the robustness of the Crosser integration and AAA security protocols.",
+            script: "\"To solve this, we didn't just write a quick script. We built an enterprise-grade, secure edge pipeline... Second, we deployed Crosser at the edge. Crosser acts as our intelligent data orchestrator... Watch the screen now as I trigger our Crosser Store-and-Forward engine live.\"",
+            metrics: { current: "419.97 kA", currentStat: "Visible High Draw", curStatColor: "text-nz-orange", ren: "14.25 %", renStat: "CRITICAL DIP", renStatColor: "text-nz-red", temp: "960.5 &deg;C", tempStat: "Limit: 945&deg;C", fin: "-$12,400", finStat: "Visibility Restored" },
+            chartDesc: "Network offline. Awaiting manual edge-buffer backfill.",
+            actionBtn: { text: "&#x1F50C; Run Crosser Store-and-Forward", fn: "runCrosser", color: "bg-nz-teal hover:bg-teal-400 text-dark-bg" }
+        },
+        4: {
+            label: "Phase 4 / 5",
+            title: "The Hero Pivot: Advanced Analytics",
+            intro: "The climax. Having restored visibility, we leverage AVEVA Advanced Analytics (A3) to solve the grid crisis. The prescriptive action is based on thermal physics. Clicking 'Authorize Pivot' dynamically alters the charts to show a safe load shed.",
+            script: "\"Our AI understands the physics of heavy industry. It calculated that the Smelter Potline possesses exactly 4.2 hours of thermal inertia... The AI issued a prescriptive recommendation: Execute a Smart Sector Pivot. Shave EV network loads and drop the Smelter Potline load by 40 kA. Watch what happens when our operator clicks authorize.\"",
+            metrics: { current: "419.97 kA", currentStat: "Awaiting Mitigation", curStatColor: "text-nz-orange", ren: "14.25 %", renStat: "Grid Stressed", renStatColor: "text-nz-red", temp: "960.5 &deg;C", tempStat: "Safe Margin: +15&deg;C", fin: "-$12,400", finStat: "Action Required" },
+            chartDesc: "A3 Engine Recommends: 40 kA Load Reduction. Awaiting authorization.",
+            actionBtn: { text: "&#x1F6E1; Authorize Smart Sector Pivot", fn: "authorizePivot", color: "bg-nz-blue hover:bg-blue-400 text-dark-bg" }
+        },
+        5: {
+            label: "Phase 5 / 5",
+            title: "The Grand ROI: Victory",
+            intro: "The conclusion focuses on business outcomes. The financial and operational victories achieved through the interactive steps taken in previous phases. The visual language shifts to confirm success and safety limits.",
+            script: "\"This isn't just a technical achievement. This is an executive victory. Look at our dynamic ROI wallet... we avoided $12,400 in carbon and peak-demand grid penalties in a single evening... preserved our multi-million dollar industrial smelting assets by operating strictly within safe physics-based boundaries.\"",
+            metrics: { current: "379.97 kA", currentStat: "Pivot Stabilized", curStatColor: "text-nz-green", ren: "14.25 %", renStat: "Load Balanced", renStatColor: "text-nz-orange", temp: "951.2 &deg;C", tempStat: "Safe Margin: +6&deg;C", fin: "$12,400", finStat: "PENALTY AVOIDED" },
+            chartDesc: "Sector coupling successful. Grid demand met via smelter thermal battery utilization.",
+            actionBtn: null
+        }
+    };
+
+    const timeLabels = ['-4h', '-3.5h', '-3h', '-2.5h', '-2h', '-1.5h', '-1h', '-30m', 'Now'];
+    const baseSmelterData = [420, 421, 419, 420, 420, 420, 420, 420, 420];
+    const baseEVData = [120, 125, 130, 128, 125, 120, 122, 125, 125];
+    const gapSmelterData = [420, 421, 419, 420, null, null, null, null, 420];
+    const gapEVData = [120, 125, 130, 128, null, null, null, null, 185];
+    const resolvedEVData = [120, 125, 130, 128, 140, 155, 170, 180, 185];
+
+    let chartInstance = null;
+    let marginChartInstance = null;
+
+    const darkChartDefaults = {
+        color: '#94A3B8',
+        borderColor: '#1E2D4A',
+    };
+
+    function initCharts() {
+        Chart.defaults.color = '#94A3B8';
+        Chart.defaults.borderColor = '#1E2D4A';
+
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: 'Smelter Current (kA)',
+                        data: [...baseSmelterData],
+                        borderColor: '#C084FC',
+                        backgroundColor: 'rgba(192, 132, 252, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#C084FC',
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'EV Network Load (kW)',
+                        data: [...baseEVData],
+                        borderColor: '#60A5FA',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointBackgroundColor: '#60A5FA',
+                        pointRadius: 3,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 8, color: '#94A3B8' } },
+                    tooltip: { backgroundColor: 'rgba(17, 27, 46, 0.95)', titleColor: '#E2E8F0', bodyColor: '#CBD5E1', borderColor: '#2A3F5F', borderWidth: 1 }
+                },
+                scales: {
+                    y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'kA', color: '#64748B' }, min: 350, max: 450, grid: { color: 'rgba(30, 45, 74, 0.5)' }, ticks: { color: '#64748B' } },
+                    y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: 'kW', color: '#64748B' }, min: 50, max: 250, grid: { drawOnChartArea: false }, ticks: { color: '#64748B' } },
+                    x: { grid: { display: false }, ticks: { color: '#64748B' } }
+                }
+            }
+        });
+
+        const ctxMargin = document.getElementById('marginChart').getContext('2d');
+        marginChartInstance = new Chart(ctxMargin, {
+            type: 'bar',
+            data: {
+                labels: ['Thermal State'],
+                datasets: [
+                    { label: 'Current Temp', data: [960], backgroundColor: '#4ADE80', borderRadius: 4 },
+                    { label: 'Freeze Limit', data: [945], backgroundColor: '#F87171', borderRadius: 4 }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.raw + '\u00B0C' } } },
+                scales: {
+                    x: { min: 900, max: 1000, grid: { color: 'rgba(30, 45, 74, 0.5)' }, ticks: { color: '#64748B' } },
+                    y: { grid: { display: false }, ticks: { color: '#94A3B8' } }
+                }
+            }
+        });
+    }
+
+    function loadPhase(p) {
+        state.phase = p;
+        const data = content[p];
+
+        document.querySelectorAll('#nav-list button').forEach(btn => {
+            btn.classList.remove('nav-active');
+            btn.classList.add('text-gray-400');
+        });
+        const activeBtn = document.getElementById(`nav-${p}`);
+        activeBtn.classList.remove('text-gray-400');
+        activeBtn.classList.add('nav-active');
+
+        document.getElementById('phase-label').textContent = data.label;
+        document.getElementById('phase-title').textContent = data.title;
+        document.getElementById('phase-intro').innerHTML = data.intro;
+        document.getElementById('script-quote').innerHTML = data.script;
+        document.getElementById('chart-desc').textContent = data.chartDesc;
+
+        document.getElementById('kpi-current').innerHTML = data.metrics.current;
+        document.getElementById('kpi-current-status').textContent = data.metrics.currentStat;
+        document.getElementById('kpi-current-status').className = `text-[11px] font-semibold mt-1 ${data.metrics.curStatColor}`;
+        document.getElementById('kpi-renewable').innerHTML = data.metrics.ren;
+        document.getElementById('kpi-renewable-status').textContent = data.metrics.renStat;
+        document.getElementById('kpi-renewable-status').className = `text-[11px] font-semibold mt-1 ${data.metrics.renStatColor}`;
+        document.getElementById('kpi-temp').innerHTML = data.metrics.temp;
+        document.getElementById('kpi-temp-status').innerHTML = data.metrics.tempStat;
+        document.getElementById('kpi-finance').innerHTML = data.metrics.fin;
+        document.getElementById('kpi-finance-status').textContent = data.metrics.finStat;
+
+        const finCard = document.getElementById('kpi-card-finance');
+        finCard.className = 'kpi-card p-4 rounded-xl';
+        document.getElementById('kpi-finance').className = 'text-2xl font-extrabold text-nz-yellow';
+        if (p === 5) {
+            finCard.classList.add('ring-2', 'ring-nz-green/50');
+            document.getElementById('kpi-finance').className = 'text-2xl font-extrabold text-nz-green glow-green';
+        } else if (p >= 2 && p <= 4) {
+            finCard.classList.add('ring-2', 'ring-nz-red/50');
+            document.getElementById('kpi-finance').className = 'text-2xl font-extrabold text-nz-red glow-red';
+        }
+
+        const actionContainer = document.getElementById('action-container');
+        const actionBtn = document.getElementById('primary-action-btn');
+        if (data.actionBtn) {
+            actionContainer.classList.remove('hidden');
+            actionBtn.innerHTML = data.actionBtn.text;
+            actionBtn.className = `${data.actionBtn.color} font-bold py-2 px-5 rounded-lg shadow-lg transition-all transform hover:scale-105 flex items-center gap-2 text-sm`;
+            actionBtn.onclick = window[data.actionBtn.fn];
+            if (data.actionBtn.fn === 'runCrosser' && state.gapFixed) actionContainer.classList.add('hidden');
+            if (data.actionBtn.fn === 'authorizePivot' && state.pivotAuthorized) actionContainer.classList.add('hidden');
+        } else {
+            actionContainer.classList.add('hidden');
+        }
+
+        const marginContainer = document.getElementById('secondary-chart-container');
+        if (p >= 4) { marginContainer.classList.remove('hidden'); } else { marginContainer.classList.add('hidden'); }
+
+        updateChartData(p);
+    }
+
+    function updateChartData(p) {
+        if (p === 1) {
+            chartInstance.data.datasets[0].data = [...baseSmelterData];
+            chartInstance.data.datasets[1].data = [...baseEVData];
+        } else if (p === 2) {
+            chartInstance.data.datasets[0].data = [...baseSmelterData];
+            chartInstance.data.datasets[1].data = [...gapEVData];
+        } else if (p === 3) {
+            if (state.gapFixed) {
+                chartInstance.data.datasets[0].data = [...baseSmelterData];
+                chartInstance.data.datasets[1].data = [...resolvedEVData];
+            } else {
+                chartInstance.data.datasets[0].data = [...gapSmelterData];
+                chartInstance.data.datasets[1].data = [...gapEVData];
+            }
+        } else if (p === 4) {
+            chartInstance.data.datasets[0].data = [...baseSmelterData];
+            chartInstance.data.datasets[1].data = [...resolvedEVData];
+            marginChartInstance.data.datasets[0].data = [960.5];
+        } else if (p === 5) {
+            let pivotedSmelter = [...baseSmelterData];
+            pivotedSmelter[8] = 380;
+            chartInstance.data.datasets[0].data = pivotedSmelter;
+            chartInstance.data.datasets[1].data = [...resolvedEVData];
+            marginChartInstance.data.datasets[0].data = [951.2];
+        }
+        chartInstance.update();
+        marginChartInstance.update();
+    }
+
+    function runCrosser() {
+        state.gapFixed = true;
+        document.getElementById('action-container').classList.add('hidden');
+        document.getElementById('chart-desc').innerHTML = "<span class='text-nz-green font-bold'>\u2713 Crosser Store-and-Forward executed.</span> Historical gap perfectly backfilled to AVEVA Connect.";
+        updateChartData(3);
+    }
+
+    function authorizePivot() {
+        state.pivotAuthorized = true;
+        document.getElementById('action-container').classList.add('hidden');
+        document.getElementById('chart-desc').innerHTML = "<span class='text-nz-teal font-bold'>\u2713 Smart Sector Pivot Executed.</span> 40 kA load successfully shed to balance city grid.";
+        document.getElementById('kpi-current').innerHTML = "379.97 kA";
+        document.getElementById('kpi-current-status').textContent = "Pivot Stabilized";
+        document.getElementById('kpi-current-status').className = "text-[11px] font-semibold mt-1 text-nz-green";
+        document.getElementById('kpi-temp').innerHTML = "951.2 &deg;C";
+        document.getElementById('kpi-temp-status').innerHTML = "Safe Margin: +6&deg;C";
+        updateChartData(5);
+        setTimeout(() => { loadPhase(5); }, 1500);
+    }
+
+    window.onload = () => {
+        initCharts();
+        loadPhase(1);
+    };
+</script>
+</body>
+</html>
